@@ -199,10 +199,6 @@ const MapView = () => {
     //handleFindFeature()
   }; */
 
-   
-  //const [active, setActive] = useState(false)
-
-
 //////////////////////
 
 const handleMapClick = (e) => {
@@ -249,7 +245,6 @@ const MapClickHandler = () => {
           </LayersControl.Overlay>
           <LayersControl.Overlay name= "Areas de Actividad"  >
             <MapaUsos data={dataUsos} layerRef={usoRef} />
-          {/* <GeoJSON data={dataUsos}  style={usoStyle} ref={usoRef} /> */}
           </LayersControl.Overlay>
           <LayersControl.Overlay name= "Clasificacion Suelo">
           {/* <GeoJSON data={limites} style={geoJsonStyle} ref={limitesLayerRef} /> */}
@@ -280,10 +275,6 @@ const MapClickHandler = () => {
                 </Tooltip>
               </ButtonGroup>
             </Control>
-            {/* <ConsultaPunto
-              active={markerActive} onDeactivate={handleDeactivate}
-              onCoordinateSelect={handleCoordinateSelect}
-            /> */}
             <MapClickHandler />
       </MapContainer>
       
