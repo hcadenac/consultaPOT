@@ -1,24 +1,24 @@
 
-///compnente princiapl de la aplicacion/////////
-import React, { useEffect, useRef, useState } from 'react';
-import { LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@mui/material';
+///compOnente princiapl de la aplicacion/////////
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@mui/material';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import { point } from '@turf/helpers';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
 import dataUsos from "../Capas/areasActividad.json";
 import dataSuelo from "../Capas/clasesuelo.json";
 import dataTratamiento from "../Capas/tratamiento.json";
 import dataUdp from "../Capas/udp.json";
-import ConsultaDialog from './DialogoConsulta'; // Importar el nuevo componente
+import ResultadoDialog from './DialogoResultado'; // Importar el nuevo componente
 import MapaSuelo from './MapaSuelo';
 import MapaTratamiento from './MapaTratamientos';
 import MapaUdp from './MapaUdp';
 import MapaUsos from './MapaUsos';
-import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import { point } from '@turf/helpers';
 
 const MapView = () => {
   
@@ -28,7 +28,7 @@ const MapView = () => {
   const tratamientoRef = useRef(null);
   const udpRef = useRef(null);
 
-  //crea los estados para almacenar los datos de las caps y las cordenadas////
+  //crea los estados para almacenar los datos de las capas y las cordenadas////
   const [open, setOpen] = useState(false);
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
@@ -40,9 +40,17 @@ const MapView = () => {
   const [modalidadData, setModalidadData]= useState(null);
   const [udpData, setUdpData] = useState(null);
   const [comunaData, setComunaData]= useState(null);
+  const [latitud, setLatitud]= useState('');
+  const [longitud, setLongitud]= useState(null);
 
-  //const map = useMap();
-  const [markerActive, setMarkerActive]= useState(null)
+  const punto = Object.freeze({
+    latitud: latitud,
+    longitud: longitud,
+  });
+ 
+  //ASIGNA ESTADO AL DAR CLIC EN EL BOTON DE CONSULTA POR UBICACION///
+  const [isCursorCliked, setIsCursorCliked] = useState(false);
+
   //estado para abrir dialogo//////
   const [openD, setOpenD] = useState(false);
 
@@ -79,7 +87,7 @@ const MapView = () => {
   const getFeatureByCoordinates = (lat, lng, geoJsonLayer) => {
     const pt = point([lng, lat]);
     let foundFeature = null;
-  
+    setLatitud(lat)
     geoJsonLayer.eachLayer(layer => {
       if (layer.feature) {
         const geometry = layer.feature.geometry;
@@ -127,6 +135,13 @@ const MapView = () => {
   
   const latNum = parseFloat(lat);
   const lngNum = parseFloat(lng);
+  //punto.latitud = lat;
+  //punto.longitud = lng;
+  const coordenadasInmutables = Object.freeze({ latitud: latNum, longitud: lngNum });
+  setLatitud(coordenadasInmutables.latitud.toString())
+  setLongitud(coordenadasInmutables.longitud.toString())
+
+
 
   // Verificar si las coordenadas están dentro de la extensión del GeoJSON
   if (!geoJsonBounds.contains([latNum, lngNum])) {
@@ -151,6 +166,7 @@ const MapView = () => {
   
   if (foundUsosFeature) {
     console.log('Feature found:', foundUsosFeature);
+    
    
   } else {
     console.log('No feature found at this location...gonorrea');
@@ -158,6 +174,7 @@ const MapView = () => {
 
   handleClose();
   setOpenD(true);
+  console.log(coordenadasInmutables)
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -169,6 +186,7 @@ const MapView = () => {
     Comuna: comunaData,
     Udp: udpData,
   };
+ 
   /////abre y cierra el dialogo para introducir coordenadas///////////////////
   const handleOpen = () => {
     setOpen(true);
@@ -187,8 +205,8 @@ const MapView = () => {
   };
 
   const handleControlClick = () => {
-    
-    setMarkerActive(true);
+    setIsCursorCliked(true);
+    //setMarkerActive(true);
     
   };
 
@@ -202,16 +220,19 @@ const MapView = () => {
 //////////////////////
 
 const handleMapClick = (e) => {
+  if (!isCursorCliked) return; 
   const { lat, lng } = e.latlng;
   setLat(lat);
   setLng(lng);
-  const foundFeature = getFeatureByCoordinates(lat, lng, usoRef.current);
+  
+  /* const foundFeature = getFeatureByCoordinates(lat, lng, usoRef.current);
 
   if (foundFeature) {
     console.log('Feature found:', foundFeature);
   } else {
-    console.log('No feature found at this location.');
-  }
+    console.log('No feature found at this location GONORREA.');
+  } */
+  setIsCursorCliked(false);
 };
 
 const MapClickHandler = () => {
@@ -225,7 +246,7 @@ const MapClickHandler = () => {
 //////////////////
   return (
     <>
-      <MapContainer center={[8.7498, -75.8776]} zoom={12} scrollWheelZoom={true}>
+      <MapContainer center={[8.7498, -75.8776]} zoom={12} style={{ height: "100vh", cursor: isCursorCliked ? 'crosshair' : 'default' }} scrollWheelZoom={true}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="OpenStreetMap">
             <TileLayer
@@ -316,7 +337,7 @@ const MapClickHandler = () => {
           </DialogActions>
         </Dialog>
         {/* <ConsultaDialog openD={openD} handleCloseD={handleCloseD} datos={{ Suelo: sueloData, Uso: usoData, Tratamiento: tratamientoData, Udp: udpData }} />   */}
-        <ConsultaDialog openD={openD} handleCloseD={handlecloseD} datos={datos}  />
+        <ResultadoDialog openD={openD} handleCloseD={handlecloseD} datos={datos} punto={punto}  />
           {error && <p style={{ color: 'red' }}>{error}</p>}
     </>
       );

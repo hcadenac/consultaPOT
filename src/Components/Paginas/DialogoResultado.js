@@ -15,7 +15,8 @@ const StyledTableCell = styled(TableCell)({
     fontWeight: 'normal',
   });
 
-const DialogoConsulta = ({ openD, handleCloseD, datos }) => {
+const DialogoResultado = ({ openD, handleCloseD, datos, punto }) => {
+  console.log(punto)
   return (
     <Dialog open={openD} onClose={handleCloseD}>
       <DialogTitle>Resultados de la Consulta</DialogTitle>
@@ -53,7 +54,7 @@ const DialogoConsulta = ({ openD, handleCloseD, datos }) => {
         <Button onClick={handleCloseD} variant="outlined" color="primary">
           Cerrar
         </Button>
-        <Button onClick={() => generatePDF(datos)} variant="outlined" color="primary">
+        <Button onClick={() => generatePDF(datos, punto)} variant="outlined" color="primary">
           Exporta PDF
         </Button>
       </DialogActions>
@@ -61,4 +62,4 @@ const DialogoConsulta = ({ openD, handleCloseD, datos }) => {
   );
 };
 
-export default DialogoConsulta;
+export default DialogoResultado;
