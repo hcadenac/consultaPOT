@@ -137,9 +137,9 @@ const MapView = () => {
   const lngNum = parseFloat(lng);
   //punto.latitud = lat;
   //punto.longitud = lng;
-  const coordenadasInmutables = Object.freeze({ latitud: latNum, longitud: lngNum });
-  setLatitud(coordenadasInmutables.latitud.toString())
-  setLongitud(coordenadasInmutables.longitud.toString())
+  const coordenadasPunto = Object.freeze({ latitud: latNum, longitud: lngNum });
+  setLatitud(coordenadasPunto.latitud.toString())
+  setLongitud(coordenadasPunto.longitud.toString())
 
 
 
@@ -174,7 +174,6 @@ const MapView = () => {
 
   handleClose();
   setOpenD(true);
-  console.log(coordenadasInmutables)
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -210,13 +209,6 @@ const MapView = () => {
     
   };
 
-  /* const handleDeactivate = () => {
-    //setLat(latLng.lat);
-    //setLng(latLng.lng);
-    setMarkerActive(false);
-    //handleFindFeature()
-  }; */
-
 //////////////////////
 
 const handleMapClick = (e) => {
@@ -224,6 +216,7 @@ const handleMapClick = (e) => {
   const { lat, lng } = e.latlng;
   setLat(lat);
   setLng(lng);
+  setOpen(true);
   
   /* const foundFeature = getFeatureByCoordinates(lat, lng, usoRef.current);
 

@@ -25,20 +25,18 @@ const generatePDF = (data, punto) => {
   const texto3= 'RESULTADO DE LA CONSULTA';
 
   /// Calcula el ancho del texto
-  const textWidth2 = pdf.getTextWidth(texto2);
+  //const textWidth2 = pdf.getTextWidth(texto2);
   const textWidth3 = pdf.getTextWidth(texto3);
 
   // Calcula la posición `x` para centrar el texto
   const pageWidth = pdf.internal.pageSize.getWidth();
   const x1 = (pageWidth - textWidth3) / 2;
   //const x2 = (pageWidth - textWidth2) / 2;
-  //console.log (pageWidth)
-  //console.log (textWidth2)
    // Line width in units (you can adjust this)
    //pdf.setLineWidth(2);
-
+   
    pdf.setFontSize(8);
-   pdf.setFont('custom', 'bold');
+   pdf.setFont('Times', 'bold');
    pdf.text(texto1, 98, 30);
    pdf.text(texto2, 72, 33);
    pdf.text(texto2m, 100, 36);
@@ -49,7 +47,6 @@ const generatePDF = (data, punto) => {
 
   pdf.text("Fecha de Elaboracion:", 20,50)
   pdf.text(dateString, 50, 50)
-  console.log("GONORREA")
   pdf.text('Latitud', 20, 55)
   pdf.text(punto.latitud.toString(), 50, 55)
   pdf.text('Longitud', 20, 60)
@@ -57,7 +54,7 @@ const generatePDF = (data, punto) => {
 
   // Agrega un título en las cordenadas 20,20
   pdf.text('RESULTADO DE LA CONSULTA', x1, 70);
-  pdf.setFont('custom', 'normal');
+  pdf.setFont('Times', 'bold');
 
 
   // Define las columnas y filas para la tabla

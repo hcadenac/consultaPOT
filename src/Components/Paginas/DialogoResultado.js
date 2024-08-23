@@ -16,7 +16,6 @@ const StyledTableCell = styled(TableCell)({
   });
 
 const DialogoResultado = ({ openD, handleCloseD, datos, punto }) => {
-  console.log(punto)
   return (
     <Dialog open={openD} onClose={handleCloseD}>
       <DialogTitle>Resultados de la Consulta</DialogTitle>
