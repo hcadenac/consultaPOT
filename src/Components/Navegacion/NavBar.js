@@ -1,14 +1,15 @@
-import * as React from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import logoMulti1 from '../Assets/logosgi_verde.png';
+
 
 const darkTheme = createTheme({
     palette: {
@@ -20,7 +21,9 @@ const darkTheme = createTheme({
   });
 
 export const NavBar =()=> {
+  
   return (
+    <>
     <Box sx={{ flexGrow: 1, height: '40px', display: 'flex', alignItems: 'center' }}>
         <ThemeProvider theme={darkTheme}>
             <AppBar position="static" color="primary" enableColorOnDark>
@@ -40,13 +43,15 @@ export const NavBar =()=> {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        News
+                        Consulta
                     </Typography>
-                    <Button as={Link} to={"/Inicio"} color="inherit">Rural</Button>
-                    <Button as={Link} to={"/MapView"} color="inherit">Urbano</Button>
+                    <Button as={Link} to={"/MapaRural"} color="inherit">Rural</Button>                    
+                    <Button as={Link} to={"/MapaUrbano"} color="inherit">Urbano</Button>
                 </Toolbar>
             </AppBar>
-        </ThemeProvider>
+        </ThemeProvider> 
     </Box>
+   
+    </>
   );
 }

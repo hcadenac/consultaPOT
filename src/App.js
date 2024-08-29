@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import MapView from './Components/Paginas/MapView';
+//import MapView from './Components/Paginas/MapViewUrbano';
 import './App.css';
 import {NavBar}  from './Components/Navegacion/NavBar';
-import MapaUrbano from './Components/Paginas/MapView';
+import MapaUrbano from './Components/Paginas/MapViewUrbano';
+import MapaRural from './Components/Paginas/MapViewRural';
 import Inicio from './Components/Paginas/Inicio';
 
 
@@ -18,9 +19,9 @@ function App() {
           </div> */}
             <div className="content">
               <Routes>
-                  <Route path='/' element={<MapView />} />
-                  <Route path="/Inicio" element={<Inicio />} />
-                  <Route path="/MapView" element={<MapView />} /> 
+                  <Route path='/' element={<Inicio />} />
+                  <Route path="/MapaRural" element={<MapaRural />} />
+                  <Route path="/MapaUrbano" element={<MapaUrbano />} /> 
                   {/* <Route path='/Consulta' element={<Consulta />} />
                   <Route path='/Registro' element={<Registro />} />  
                   <Route path='/Login' element={<Login />} />   */}
