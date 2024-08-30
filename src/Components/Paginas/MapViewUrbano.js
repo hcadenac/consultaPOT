@@ -20,7 +20,7 @@ import dataTratamiento from "../Capas/tratamiento.json";
 import dataUdp from "../Capas/udp.json";
 import ResultadoDialog from './DialogoResultado'; // Importar el nuevo componente
 
-const MapViewUrbano = ({view}) => {
+const MapViewUrbano = () => {
     
   ///crea las referencias para cada una de las capas/////
   const sueloRef = useRef(null);

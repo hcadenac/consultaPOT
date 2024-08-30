@@ -12,9 +12,11 @@ import { LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaf
 import Control from 'react-leaflet-custom-control';
 import dataActividadRural from "../Capas/areaActividadRural.json";
 import dataCorregimientos from "../Capas/corregimientos.json";
+import dataSuelo from "../Capas/clasesuelo.json";
 import ResultadoDialog from './DialogoResultado'; // Importar el nuevo componente
 import MapaActividadRural from './MapaActividadRural';
 import MapaCorregimientos from './MapaCorregimientos';
+import MapaSuelo from './MapaSuelo';
 
 
 const MapViewRural = () => {
@@ -22,6 +24,7 @@ const MapViewRural = () => {
   ///crea las referencias para cada una de las capas/////
   const actividadRuralRef = useRef(null);
   const corregimientoRef = useRef(null);
+  const sueloRef = useRef(null);
   //const tratamientoRef = useRef(null);
   //const udpRef = useRef(null);
 
@@ -32,11 +35,11 @@ const MapViewRural = () => {
   const [error, setError] = useState('');
 
   const [actividadRuralData, setActividadRuralData] = useState(null);
-  const [corregimientoData, setCorregimientoData] = useState(null);  
-  /*const [tratamientoData, setTratamientoData] = useState(null);
-  const [modalidadData, setModalidadData]= useState(null);
-  const [udpData, setUdpData] = useState(null);
-  const [comunaData, setComunaData]= useState(null);*/
+  const [corregimientoData, setCorregimientoData] = useState(null);
+  const [sueloData, setSueloData] = useState(null);  
+  const [tipoData, setTipoData] = useState(null);
+  const [subtipoData, setSubtipoData]= useState(null);
+  const [usoPrincipalData, setUsoPrincipalData] = useState(null);
   const [latitud, setLatitud]= useState('');
   const [longitud, setLongitud]= useState(null);
 
@@ -68,6 +71,10 @@ const MapViewRural = () => {
     if (corregimientoRef.current) {
       corregimientoRef.current.clearLayers();
       corregimientoRef.current.addData(dataCorregimientos);
+    }
+    if (sueloRef.current) {
+      sueloRef.current.clearLayers();
+      sueloRef.current.addData(dataSuelo);
     }
   }, []);
 
@@ -122,12 +129,18 @@ const MapViewRural = () => {
   ////que se intersectan con e punto y obtien sus atributos/////////////////
   const foundActividadFeature = getFeatureByCoordinates(lat, lng, actividadRuralRef.current);
   const foundCorregimientoFeature = getFeatureByCoordinates(lat, lng, corregimientoRef.current);
+  const foundSuelosFeature = getFeatureByCoordinates(lat, lng, sueloRef.current);
   //const foundTratamientosFeature = getFeatureByCoordinates(lat, lng, tratamientoRef.current);
   //const foundUdpFeature = getFeatureByCoordinates(lat, lng, udpRef.current);
 
   //// Almacena en los estados los datos obtenidos de los atributos de las capas/////
-  setActividadRuralData(foundActividadFeature ? foundActividadFeature.properties.AREAS_ACT : null);
+  setSueloData(foundSuelosFeature ? foundSuelosFeature.properties.TIPO_SUELO : null);
   setCorregimientoData(foundCorregimientoFeature ? foundCorregimientoFeature.properties.CORREGIMIE : null);
+  setActividadRuralData(foundActividadFeature ? foundActividadFeature.properties.AREAS_ACT : null);
+  setTipoData(foundActividadFeature ? foundActividadFeature.properties.TIPO : null);
+  setSubtipoData(foundActividadFeature ? foundActividadFeature.properties.SUBTIPO : null);
+  setUsoPrincipalData(foundActividadFeature ? foundActividadFeature.properties.USO_PRINCI : null);
+  
   //setModalidadData(foundTratamientosFeature ? foundTratamientosFeature.properties.Modalidad : null);
   //setSueloData(foundSuelosFeature ? foundSuelosFeature.properties.TIPO_SUELO : null);
   //setUdpData(foundUdpFeature ? foundUdpFeature.properties.NOMBRE : null);
@@ -147,12 +160,12 @@ const MapViewRural = () => {
 
   //// se almacenan los datos obtenidos de la consulta //////////////
   const datos = {
-    Actividad: actividadRuralData,
+    Suelo: sueloData,
     Corregimiento: corregimientoData,
-    //Tratamiento: tratamientoData,
-    //Modalidad: modalidadData,
-    //Comuna: comunaData,
-    //Udp: udpData,
+    Actividad: actividadRuralData,
+    Tipo: tipoData,
+    Subtipo: subtipoData,
+    UsoPrincipal: usoPrincipalData, 
   };
  
   /////abre y cierra el dialogo para introducir coordenadas///////////////////
@@ -220,6 +233,9 @@ const MapClickHandler = () => {
             </LayersControl.Overlay>
             <LayersControl.Overlay name="Corregimientos">
               <MapaCorregimientos data={dataCorregimientos} layerRef={corregimientoRef} />
+            </LayersControl.Overlay>
+            <LayersControl.Overlay name="Clasificación Suelo">
+              <MapaSuelo data={dataSuelo} layerRef={sueloRef} />
             </LayersControl.Overlay>
 
 
