@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 //import MapView from './Components/Paginas/MapViewUrbano';
 import './App.css';
 import {NavBar}  from './Components/Navegacion/NavBar';
+import SideBar from './Components/Navegacion/SideBar';
 import MapaUrbano from './Components/Paginas/MapViewUrbano';
 import MapaRural from './Components/Paginas/MapViewRural';
 import Inicio from './Components/Paginas/Inicio';
@@ -12,14 +13,15 @@ function App() {
   return (
     <div className="App">
       <Router>
-        < NavBar />
+        {/* < NavBar /> */}
         {/* <div className="flex"> */}
-         {/*  <div className="sidebar">
+         <div className="sidebar">
             < SideBar />
-          </div> */}
+          </div>
             <div className="content">
               <Routes>
                   <Route path='/' element={<Inicio />} />
+                  <Route path="/Inicio" element={<Inicio />} />
                   <Route path="/MapaRural" element={<MapaRural />} />
                   <Route path="/MapaUrbano" element={<MapaUrbano />} /> 
                   {/* <Route path='/Consulta' element={<Consulta />} />

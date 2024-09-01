@@ -11,8 +11,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
 import dataActividadRural from "../Capas/areaActividadRural.json";
-import dataCorregimientos from "../Capas/corregimientos.json";
 import dataSuelo from "../Capas/clasesuelo.json";
+import dataCorregimientos from "../Capas/corregimientos.json";
 import ResultadoDialog from './DialogoResultado'; // Importar el nuevo componente
 import MapaActividadRural from './MapaActividadRural';
 import MapaCorregimientos from './MapaCorregimientos';
