@@ -14,7 +14,8 @@ import {
     ListItemIcon,
     ListItemText,
     styled,
-    Toolbar
+    Toolbar,
+    Typography
 } from '@mui/material';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -23,7 +24,7 @@ import logo from '../Assets/logosgi_verde.png';
 
 
 
-const drawerWidth = 240;
+//const drawerWidth = 240;
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -51,12 +52,15 @@ export default function SideBar() {
                 <Toolbar>
                     <IconButton size = 'large' edge='start' color='inherit' aria-label='Menu' sx={{mr:2}}
                     onClick={drawerOpen}>
-                        < TravelExploreOutlinedIcon/>
+                        < TravelExploreOutlinedIcon sx={{ fontSize: '40px', color: '#FF9800'}} />
                     </IconButton>
+                    <Typography variant="h6" noWrap component="div">
+                        Menu
+                    </Typography>
                 </Toolbar>
             </AppBar>
             </Box>
-            <Drawer anchor ='left' open={open} >
+            <Drawer anchor ='left' open={open} onClose={drawerClose} >
             <DrawerHeader>
                 <Box 
                     sx={{
@@ -78,16 +82,16 @@ export default function SideBar() {
             <Divider />
                 <List onClick={drawerClose}>
                     <ListItem disablePadding >
-                    <ListItemButton
-                        as={Link}
-                        to={"/Inicio"} 
-                        sx={{
-                        borderRadius: "12px",
-                        "&:hover": {
-                            backgroundColor: "PowderBlue", // Cambia esto al color que desees
-                        },
-                        }}
-                    >
+                        <ListItemButton
+                            component={Link}
+                            to={"/Inicio"}
+                            sx={{
+                                borderRadius: "12px",
+                                "&:hover": {
+                                    backgroundColor: "PowderBlue",
+                                },
+                            }}
+                        >
                         <ListItemIcon>
                             <HomeIcon /> 
                         </ListItemIcon>
@@ -96,7 +100,7 @@ export default function SideBar() {
                     </ListItem >
                     <ListItem disablePadding >
                     <ListItemButton
-                        as={Link}
+                        component={Link}
                         to={"/MapaUrbano"}
                         sx={{
                         borderRadius: "12px",
@@ -113,7 +117,7 @@ export default function SideBar() {
                     </ListItem >
                     <ListItem disablePadding>
                     <ListItemButton
-                        as={Link}
+                        component={Link}
                         to={"/MapaRural"}
                         sx={{
                         borderRadius: "12px",

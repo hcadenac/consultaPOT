@@ -2,13 +2,14 @@
 ///compOnente princiapl de la aplicacion/////////
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@mui/material';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
-import L from 'leaflet';
+import L, { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useRef, useState } from 'react';
-import { LayersControl, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import { LayersControl, MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
 import dataActividadRural from "../Capas/areaActividadRural.json";
 import dataSuelo from "../Capas/clasesuelo.json";
@@ -20,7 +21,13 @@ import MapaSuelo from './MapaSuelo';
 
 
 const MapViewRural = () => {
-  
+
+   ////////ICONO PARA MOSTRAR EL MARCADOR///////////
+   const icono = new Icon ({
+    iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
+    iconSize: [25, 41]
+  });
+
   ///crea las referencias para cada una de las capas/////
   const actividadRuralRef = useRef(null);
   const corregimientoRef = useRef(null);
@@ -155,7 +162,7 @@ const MapViewRural = () => {
   }
 
   handleClose();
-  setOpenD(true);
+  //setOpenD(true);
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -170,23 +177,30 @@ const MapViewRural = () => {
  
   /////abre y cierra el dialogo para introducir coordenadas///////////////////
   const handleOpen = () => {
+    setLat('');
+    setLng('');
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
    
-    setLat('');
-    setLng('');
+    //setLat('');
+    //setLng('');
     setError('')
   };
   /////
+  const handleopenD = () => {  
+    setOpenD(true);
+  };
+
   const handlecloseD = () => {
     setOpenD(false);
   };
 
   const handleControlClick = () => {
     setIsCursorCliked(true);
+    changeCursor();
     //setMarkerActive(true);
     
   };
@@ -194,7 +208,8 @@ const MapViewRural = () => {
 //////////////////////
 
 const handleMapClick = (e) => {
-  if (!isCursorCliked) return; 
+  if (!isCursorCliked) return;
+  setCursorChanged(false); 
   const { lat, lng } = e.latlng;
   setLat(lat);
   setLng(lng);
@@ -209,6 +224,24 @@ const MapClickHandler = () => {
   });
   return null;
 };
+
+const [cursorChanged, setCursorChanged] = useState(false);
+/* const handleClick = () => {
+  changeCursor(); // Cambia el estado del puntero
+}; */
+
+const changeCursor = () => {
+  setCursorChanged(!cursorChanged);
+};
+
+useEffect(() => {
+  const mapElement = document.querySelector('.leaflet-container');
+  if (cursorChanged) {
+    mapElement.style.cursor = 'crosshair'; // Cambia el puntero
+  } else {
+    mapElement.style.cursor = ''; // Vuelve al puntero predeterminado
+  }
+}, [cursorChanged]);
 
 //////////////////
 
@@ -237,9 +270,12 @@ const MapClickHandler = () => {
             <LayersControl.Overlay name="Clasificación Suelo">
               <MapaSuelo data={dataSuelo} layerRef={sueloRef} />
             </LayersControl.Overlay>
-
-
           </LayersControl>
+
+          if (lat && lng){
+            <Marker position={{lat, lng}} icon={icono}></Marker>
+          }
+
             <Control position='topleft'>
               <ButtonGroup orientation="vertical" variant="contained">
                 <Tooltip placement="left" title="CONSULTAR PUNTO POR CORDENADAS">
@@ -260,6 +296,18 @@ const MapClickHandler = () => {
                 </Tooltip>
               </ButtonGroup>
             </Control>
+            <Control position='topleft'>
+            <ButtonGroup orientation="vertical" variant="contained">
+              <Tooltip placement="left" title="GENERAR REPORTE">
+              <Button color='secondary' 
+                  variant="contained"
+                  onClick={ handleopenD }
+                > 
+                  <ListAltIcon />
+              </Button>
+              </Tooltip> 
+            </ButtonGroup>
+          </Control>
             <MapClickHandler />
       </MapContainer>
       
@@ -271,7 +319,7 @@ const MapClickHandler = () => {
               Introduce las coordenadas de latitud y longitud.
             </DialogContentText>
             <TextField
-              autoFocus
+              //autoFocus
               margin="dense"
               id="lat"
               label="Latitud"

@@ -2,32 +2,42 @@
 ///compOnente princiapl de la aplicacion/////////
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Tooltip } from '@mui/material';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
-import L from 'leaflet';
+import L, { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import React, { useEffect, useRef, useState } from 'react';
-import { MapContainer, useMapEvents, TileLayer, LayersControl } from 'react-leaflet';
+import { LayersControl, MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 import Control from 'react-leaflet-custom-control';
-import MapaSuelo from './MapaSuelo';
-import MapaTratamiento from './MapaTratamientos';
-import MapaUdp from './MapaUdp';
-import MapaUsos from './MapaUsos';
 import dataUsos from "../Capas/areasActividad.json";
 import dataSuelo from "../Capas/clasesuelo.json";
 import dataTratamiento from "../Capas/tratamiento.json";
 import dataUdp from "../Capas/udp.json";
 import ResultadoDialog from './DialogoResultado'; // Importar el nuevo componente
+import MapaSuelo from './MapaSuelo';
+import MapaTratamiento from './MapaTratamientos';
+import MapaUdp from './MapaUdp';
+import MapaUsos from './MapaUsos';
 
 const MapViewUrbano = () => {
     
+
+  ////////ICONO PARA MOSTRAR EL MARCADOR///////////
+  const icono = new Icon ({
+    iconUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-icon.png",
+    iconSize: [25, 41]
+  });
+
   ///crea las referencias para cada una de las capas/////
   const sueloRef = useRef(null);
   const usoRef = useRef(null);
   const tratamientoRef = useRef(null);
   const udpRef = useRef(null);
   
+  const mapRef = useRef(null);
+  const map = mapRef.current;
   //crea los estados para almacenar los datos de las capas y las cordenadas////
   
   const [open, setOpen] = useState(false);
@@ -42,13 +52,15 @@ const MapViewUrbano = () => {
   const [udpData, setUdpData] = useState(null);
   const [comunaData, setComunaData]= useState(null);
   const [latitud, setLatitud]= useState('');
-  const [longitud, setLongitud]= useState(null);
+  const [longitud, setLongitud]= useState('');
+
+  //const [posicion, setPosicion] = useState(null);
 
   const punto = Object.freeze({
     latitud: latitud,
     longitud: longitud,
   });
- 
+
   //ASIGNA ESTADO AL DAR CLIC EN EL BOTON DE CONSULTA POR UBICACION///
   const [isCursorCliked, setIsCursorCliked] = useState(false);
 
@@ -104,77 +116,56 @@ const MapViewUrbano = () => {
     return foundFeature;
   };
 
-
-  /////
-  /* const getFeatureByCoordinates = (lat, lng, layerRef) => {
-    if (!layerRef.current) {
-      return null;
-    }
-    const point = L.latLng(lat, lng);
-    let foundFeature = null;
-
-    layerRef.current.eachLayer(layer => {
-      if (layer.feature && layer.getBounds().contains(point)) {
-        foundFeature = layer.feature;
-        //console.log(layer.feature.properties.NOMBRE_ENT)
-      }
-    });
-
-    return foundFeature;
-  }; */
-  /////
-
   ////funcion para encontrar el valor del atributo que se intersecta con///// 
   //// las coordenadas introducidas por el usuario usando libreria turf.js////
   const handleFindFeature = () => {
-  if (!lat || !lng) {
-    setLat('');
-    setLng('');
-    setError('Por favor, introduce coordenadas válidas.');
-    return;
-  }
-  
-  const latNum = parseFloat(lat);
-  const lngNum = parseFloat(lng);
-  //punto.latitud = lat;
-  //punto.longitud = lng;
-  const coordenadasPunto = Object.freeze({ latitud: latNum, longitud: lngNum });
-  setLatitud(coordenadasPunto.latitud.toString())
-  setLongitud(coordenadasPunto.longitud.toString())
-
-
-
-  // Verificar si las coordenadas están dentro de la extensión del GeoJSON
-  if (!geoJsonBounds.contains([latNum, lngNum])) {
-    setError('Las coordenadas están fuera de la extensión de la capa.');
-    return;
-  }
-
-  /////realiza la consulta por coordenadas y selecciona las carateristics///
-  ////que se intersectan con e punto y obtien sus atributos/////////////////
-  const foundUsosFeature = getFeatureByCoordinates(lat, lng, usoRef.current);
-  const foundSuelosFeature = getFeatureByCoordinates(lat, lng, sueloRef.current);
-  const foundTratamientosFeature = getFeatureByCoordinates(lat, lng, tratamientoRef.current);
-  const foundUdpFeature = getFeatureByCoordinates(lat, lng, udpRef.current);
-
-  //// Almacena en los estados los datos obtenidos de los atributos de las capas/////
-  setUsoData(foundUsosFeature ? foundUsosFeature.properties.Name : null);
-  setTratamientoData(foundTratamientosFeature ? foundTratamientosFeature.properties.Tratamient : null);
-  setModalidadData(foundTratamientosFeature ? foundTratamientosFeature.properties.Modalidad : null);
-  setSueloData(foundSuelosFeature ? foundSuelosFeature.properties.TIPO_SUELO : null);
-  setUdpData(foundUdpFeature ? foundUdpFeature.properties.NOMBRE : null);
-  setComunaData(foundUdpFeature ? foundUdpFeature.properties.NMG : null);
-  
-  if (foundUsosFeature) {
-    console.log('Feature found:', foundUsosFeature);
+    if (!lat || !lng) {
+      setLat('');
+      setLng('');
+      setError('Por favor, introduce coordenadas válidas.');
+      return;
+    }
+    console.log(lat, lng)
+    const latNum = parseFloat(lat);
+    const lngNum = parseFloat(lng);
     
-   
-  } else {
-    console.log('No feature found at this location...gonorrea');
-  }
+    const coordenadasPunto = Object.freeze({ latitud: latNum, longitud: lngNum });
+    setLatitud(coordenadasPunto.latitud.toString())
+    setLongitud(coordenadasPunto.longitud.toString())
+    //setPosicion(coordenadasPunto)
 
-  handleClose();
-  setOpenD(true);
+    // Verificar si las coordenadas están dentro de la extensión del GeoJSON
+    if (!geoJsonBounds.contains([latNum, lngNum])) {
+      setError('Las coordenadas están fuera de la extensión de la capa.');
+      return;
+    }
+
+    /////realiza la consulta por coordenadas y selecciona las carateristics///
+    ////que se intersectan con e punto y obtien sus atributos/////////////////
+    const foundUsosFeature = getFeatureByCoordinates(lat, lng, usoRef.current);
+    const foundSuelosFeature = getFeatureByCoordinates(lat, lng, sueloRef.current);
+    const foundTratamientosFeature = getFeatureByCoordinates(lat, lng, tratamientoRef.current);
+    const foundUdpFeature = getFeatureByCoordinates(lat, lng, udpRef.current);
+
+    //// Almacena en los estados los datos obtenidos de los atributos de las capas/////
+    setUsoData(foundUsosFeature ? foundUsosFeature.properties.Name : null);
+    setTratamientoData(foundTratamientosFeature ? foundTratamientosFeature.properties.Tratamient : null);
+    setModalidadData(foundTratamientosFeature ? foundTratamientosFeature.properties.Modalidad : null);
+    setSueloData(foundSuelosFeature ? foundSuelosFeature.properties.TIPO_SUELO : null);
+    setUdpData(foundUdpFeature ? foundUdpFeature.properties.NOMBRE : null);
+    setComunaData(foundUdpFeature ? foundUdpFeature.properties.NMG : null);
+    
+    if (foundUsosFeature) {
+      console.log('Feature found:', foundUsosFeature);
+      
+    
+    } else {
+      console.log('No feature found at this location...gonorrea');
+    }
+
+    handleClose();
+    map.flyTo([lat, lng], 17);
+  //setOpenD(true);
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -189,37 +180,55 @@ const MapViewUrbano = () => {
  
   /////abre y cierra el dialogo para introducir coordenadas///////////////////
   const handleOpen = () => {
+    setLat('');
+    setLng('');
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-   
-    setLat('');
-    setLng('');
     setError('')
   };
   /////
+  const handleopenD = () => {  
+    setOpenD(true);
+  };
+
+
   const handlecloseD = () => {
     setOpenD(false);
   };
-
   const handleControlClick = () => {
     setIsCursorCliked(true);
+    changeCursor();
     //setMarkerActive(true);
     
   };
 
+  ////funcion para ubicar el punto con las coordenadas digitadas/////
+
+/* useEffect(() => {
+  const zoom = 17;
+  const map = mapRef.current;
+  
+  if (map) {
+    map.flyTo([lat, lng], zoom);
+  }
+}, [lat, lng]);  */
 //////////////////////
 
 const handleMapClick = (e) => {
-  if (!isCursorCliked) return; 
+  if (!isCursorCliked) return; // Evitar ejecución si el cursor no está activado
+  setCursorChanged(false);
   const { lat, lng } = e.latlng;
+
   setLat(lat);
   setLng(lng);
   setOpen(true);
   
-  setIsCursorCliked(false);
+  console.log(lat, lng)
+  setIsCursorCliked(false); // Reinicia el estado del cursor clicado
+  //map.flyTo([lat, lng], 17);
 };
 
 const MapClickHandler = () => {
@@ -229,9 +238,32 @@ const MapClickHandler = () => {
   return null;
 };
 
+const [cursorChanged, setCursorChanged] = useState(false);
+
+/* const handleClick = () => {
+  changeCursor(); // Cambia el estado del puntero
+}; */
+
+const changeCursor = () => {
+  setCursorChanged(!cursorChanged);
+};
+
+useEffect(() => {
+  const mapElement = document.querySelector('.leaflet-container');
+  if (cursorChanged) {
+    mapElement.style.cursor = 'crosshair'; // Cambia el puntero
+  } else {
+    mapElement.style.cursor = ''; // Vuelve al puntero predeterminado
+  }
+}, [cursorChanged]);
+
+
+
+
+///////////////////////////////////////////
   return (
     <>
-      <MapContainer center={[8.7498, -75.8776]} zoom={12} style={{ height: "100vh", cursor: isCursorCliked ? 'crosshair' : 'default' }} scrollWheelZoom={true}>
+      <MapContainer center={[8.7498, -75.8776]} zoom={12} ref={mapRef} scrollWheelZoom={true}>
         <LayersControl position="topright">
             <LayersControl.BaseLayer checked name="OpenStreetMap">
               <TileLayer
@@ -257,7 +289,15 @@ const MapClickHandler = () => {
               <MapaTratamiento data={dataTratamiento} layerRef={tratamientoRef} />
             </LayersControl.Overlay>
         </LayersControl>
-        
+        if (lat && lng){
+            <Marker position={{lat, lng}} icon={icono}></Marker>
+        }
+     
+        {/* {posicion && posicion.lat !== undefined && posicion.lng !== undefined && ( */}
+          {/* <LayerGroup>
+            <Marker position={{lat, lng}} icon={icono} ></Marker>
+          </LayerGroup> */}
+         {/* )}  */}
           <Control position='topleft'>
             <ButtonGroup orientation="vertical" variant="contained">
               <Tooltip placement="left" title="CONSULTAR PUNTO POR CORDENADAS">
@@ -276,6 +316,19 @@ const MapClickHandler = () => {
                   <AddLocationAltIcon /> 
                 </Button>
               </Tooltip>
+            </ButtonGroup>
+
+          </Control>
+          <Control position='topleft'>
+            <ButtonGroup orientation="vertical" variant="contained">
+              <Tooltip placement="left" title="GENERAR REPORTE">
+              <Button color='secondary' 
+                  variant="contained"
+                  onClick={ handleopenD }
+                > 
+                  <ListAltIcon />
+              </Button>
+              </Tooltip> 
             </ButtonGroup>
           </Control>
           <MapClickHandler />
