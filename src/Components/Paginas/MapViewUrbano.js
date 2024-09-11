@@ -100,7 +100,7 @@ const MapViewUrbano = () => {
   const getFeatureByCoordinates = (lat, lng, geoJsonLayer) => {
     const pt = point([lng, lat]);
     let foundFeature = null;
-    setLatitud(lat)
+    //setLatitud(lat)
     geoJsonLayer.eachLayer(layer => {
       if (layer.feature) {
         const geometry = layer.feature.geometry;
@@ -136,7 +136,7 @@ const MapViewUrbano = () => {
 
     // Verificar si las coordenadas están dentro de la extensión del GeoJSON
     if (!geoJsonBounds.contains([latNum, lngNum])) {
-      setError('Las coordenadas están fuera de la extensión de la capa.');
+      setError('Las coordenadas están fuera de la extensión del municipio.');
       return;
     }
 
@@ -189,15 +189,15 @@ const MapViewUrbano = () => {
     setOpen(false);
     setError('')
   };
-  /////
+
   const handleopenD = () => {  
     setOpenD(true);
   };
 
-
   const handlecloseD = () => {
     setOpenD(false);
   };
+
   const handleControlClick = () => {
     setIsCursorCliked(true);
     changeCursor();
@@ -293,14 +293,9 @@ useEffect(() => {
             <Marker position={{lat, lng}} icon={icono}></Marker>
         }
      
-        {/* {posicion && posicion.lat !== undefined && posicion.lng !== undefined && ( */}
-          {/* <LayerGroup>
-            <Marker position={{lat, lng}} icon={icono} ></Marker>
-          </LayerGroup> */}
-         {/* )}  */}
           <Control position='topleft'>
             <ButtonGroup orientation="vertical" variant="contained">
-              <Tooltip placement="left" title="CONSULTAR PUNTO POR CORDENADAS">
+              <Tooltip placement="left" title="CONSULTAR PUNTO INGRESANDO COORDENADAS">
                 <Button color='success'
                   variant="contained"
                   onClick={handleOpen}
@@ -308,7 +303,7 @@ useEffect(() => {
                   <GpsFixedIcon /> 
                 </Button>
               </Tooltip>
-              <Tooltip placement="left" title="CONSULTAR PUNTO POR UBICACION">
+              <Tooltip placement="left" title="CONSULTAR PUNTO DANDO CLIC EN EL MAPA">
                 <Button color='primary' 
                   variant="contained"
                   onClick={handleControlClick}
@@ -339,7 +334,7 @@ useEffect(() => {
           <DialogTitle>Consulta por Coordenadas</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Introduce las coordenadas de latitud y longitud.
+            Introduce las coordenadas de latitud y longitud en formato Decimal (Ejemplo: 8.75645; -75.894445).
             </DialogContentText>
             <TextField
               autoFocus

@@ -15,11 +15,12 @@ import {
     ListItemText,
     styled,
     Toolbar,
+    Tooltip,
     Typography
 } from '@mui/material';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../Assets/logosgi_verde.png';
+import logo from '../Assets/imageLogo1.png';
 
 
 
@@ -49,15 +50,17 @@ export default function SideBar() {
         <Box>
             <Box sx={{ flexGrow: 1, height: '40px', display: 'flex', alignItems: 'center' }}>
             <AppBar>
-                <Toolbar>
-                    <IconButton size = 'large' edge='start' color='inherit' aria-label='Menu' sx={{mr:2}}
-                    onClick={drawerOpen}>
-                        < TravelExploreOutlinedIcon sx={{ fontSize: '40px', color: '#FF9800'}} />
-                    </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Menu
-                    </Typography>
-                </Toolbar>
+                <Tooltip title="Abrir menú" placement="bottom-start" >
+                    <Toolbar>
+                        <IconButton size = 'large' edge='start' color='inherit' aria-label='Menu' sx={{mr:2}}
+                        onClick={drawerOpen}>
+                            < TravelExploreOutlinedIcon sx={{ fontSize: '40px', color: '#FF9800'}} />
+                        </IconButton>
+                        <Typography variant="h6" noWrap component="div">
+                            Menu
+                        </Typography>
+                    </Toolbar>
+                </Tooltip>
             </AppBar>
             </Box>
             <Drawer anchor ='left' open={open} onClose={drawerClose} >
@@ -72,7 +75,7 @@ export default function SideBar() {
                     }}
                 >
                     <Box sx={{ flexGrow: 1, textAlign: 'center' }}>
-                        <img src={logo} alt="Logo" style={{ height: '40px' }} />
+                        <img src={logo} alt="Logo" style={{ height: '55px', width:'50px' }} />
                     </Box>
                     <IconButton onClick={drawerClose}>
                         <ChevronLeftIcon/>
@@ -93,7 +96,7 @@ export default function SideBar() {
                             }}
                         >
                         <ListItemIcon>
-                            <HomeIcon /> 
+                            <HomeIcon sx={{ fontSize: '30px', color:'#1b5e20'}} /> 
                         </ListItemIcon>
                             <ListItemText primary={'Home'} />
                         </ListItemButton>
@@ -110,7 +113,7 @@ export default function SideBar() {
                         }}
                     >
                         <ListItemIcon>
-                            <MapsHomeWorkIcon /> 
+                            <MapsHomeWorkIcon sx={{ fontSize: '29px', color:'#1b5e20'}}/> 
                         </ListItemIcon>
                             <ListItemText primary={'Mapa Urbano'} />
                         </ListItemButton>
@@ -127,7 +130,7 @@ export default function SideBar() {
                         }}
                     >
                             <ListItemIcon>
-                            <ForestIcon /> 
+                            <ForestIcon sx={{ fontSize: '29px', color:'#1b5e20'}}/> 
                         </ListItemIcon>
                             <ListItemText primary={'Mapa Rural'} />
                         </ListItemButton>

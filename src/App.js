@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 //import MapView from './Components/Paginas/MapViewUrbano';
 import './App.css';
-import {NavBar}  from './Components/Navegacion/NavBar';
 import SideBar from './Components/Navegacion/SideBar';
 import MapaUrbano from './Components/Paginas/MapViewUrbano';
 import MapaRural from './Components/Paginas/MapViewRural';

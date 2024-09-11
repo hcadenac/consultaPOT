@@ -45,15 +45,18 @@ const generatePDF = (data, punto) => {
   pdf.setLineWidth(0.5);
   pdf.line(20, 42, pageWidth - 20, 42); // (x1, y1, x2, y2)
 
-  pdf.text("Fecha de Elaboracion:", 20,50)
-  pdf.text(dateString, 50, 50)
-  pdf.text('Latitud', 20, 55)
-  pdf.text(punto.latitud.toString(), 50, 55)
-  pdf.text('Longitud', 20, 60)
-  pdf.text(punto.longitud.toString(), 50, 60)
+  pdf.text("Fecha de Elaboracion:", 20,50);
+  pdf.text(dateString, 50, 50);
+  pdf.text('UBICACION DEL PUNTO',20, 55);
+  pdf.text('Latitud', 20, 60);
+  pdf.text(punto.latitud.toString(), 50, 60);
+  pdf.text('Longitud', 20, 65);
+  pdf.text(punto.longitud.toString(), 50, 65);
+
+  pdf.text('FUENTE TEMATICA:  INFORMACION TOMADA DEL PLAN DE ORDENAMIENTO TERRITORIAL DEL MUNICPIO DE MONTERIA', 20, 70);
 
   // Agrega un título en las cordenadas 20,20
-  pdf.text('RESULTADO DE LA CONSULTA', x1, 70);
+  pdf.text('RESULTADO DE LA CONSULTA', x1, 85);
   pdf.setFont('Times', 'bold');
 
 
@@ -72,9 +75,10 @@ const generatePDF = (data, punto) => {
   pdf.autoTable({
     head: [columns],
     body: rows,
-    startY: 80,
+    startY: 90,
   });
 
+  //pdf.text("servicios de consultoría geoespacial y catastral de alta calidad:", 20, 155);
   // Guarda el PDF
   pdf.save('resultados_consulta.pdf');
 };

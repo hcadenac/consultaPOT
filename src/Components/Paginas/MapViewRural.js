@@ -32,8 +32,9 @@ const MapViewRural = () => {
   const actividadRuralRef = useRef(null);
   const corregimientoRef = useRef(null);
   const sueloRef = useRef(null);
-  //const tratamientoRef = useRef(null);
-  //const udpRef = useRef(null);
+
+  const mapRef = useRef(null);
+  const map = mapRef.current;
 
   //crea los estados para almacenar los datos de las capas y las cordenadas////
   const [open, setOpen] = useState(false);
@@ -128,7 +129,7 @@ const MapViewRural = () => {
 
   // Verificar si las coordenadas están dentro de la extensión del GeoJSON
   if (!geoJsonBounds.contains([latNum, lngNum])) {
-    setError('Las coordenadas están fuera de la extensión de la capa.');
+    setError('Las coordenadas están fuera de la extensión del municipio.');
     return;
   }
 
@@ -162,7 +163,7 @@ const MapViewRural = () => {
   }
 
   handleClose();
-  //setOpenD(true);
+  map.flyTo([lat, lng], 17);
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -278,7 +279,7 @@ useEffect(() => {
 
             <Control position='topleft'>
               <ButtonGroup orientation="vertical" variant="contained">
-                <Tooltip placement="left" title="CONSULTAR PUNTO POR CORDENADAS">
+                <Tooltip placement="left" title="CONSULTAR PUNTO INGRESANDO COORDENADAS">
                   <Button color='success'
                     variant="contained"
                     onClick={handleOpen}
@@ -286,7 +287,7 @@ useEffect(() => {
                     <GpsFixedIcon /> 
                   </Button>
                 </Tooltip>
-                <Tooltip placement="left" title="CONSULTAR PUNTO POR UBICACION">
+                <Tooltip placement="left" title="CONSULTAR PUNTO CON CLIC EN EL MAPA">
                   <Button color='primary' 
                     variant="contained"
                     onClick={handleControlClick}
@@ -316,7 +317,7 @@ useEffect(() => {
           <DialogTitle>Consulta por Coordenadas</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Introduce las coordenadas de latitud y longitud.
+              Introduce las coordenadas de latitud y longitud en formato Decimal (Ejemplo: 8.75645; -75.894445).
             </DialogContentText>
             <TextField
               //autoFocus
