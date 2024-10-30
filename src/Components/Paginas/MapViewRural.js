@@ -125,8 +125,6 @@ const MapViewRural = () => {
   setLatitud(coordenadasPunto.latitud.toString())
   setLongitud(coordenadasPunto.longitud.toString())
 
-
-
   // Verificar si las coordenadas están dentro de la extensión del GeoJSON
   if (!geoJsonBounds.contains([latNum, lngNum])) {
     setError('Las coordenadas están fuera de la extensión del municipio.');
@@ -161,9 +159,10 @@ const MapViewRural = () => {
   } else {
     console.log('No feature found at this location...gonorrea');
   }
-
+  
   handleClose();
   map.flyTo([lat, lng], 17);
+  
   };
 
   //// se almacenan los datos obtenidos de la consulta //////////////
@@ -248,7 +247,7 @@ useEffect(() => {
 
   return (
     <>
-      <MapContainer center={[8.5898, -75.8776]} zoom={10} style={{ height: "100vh", cursor: isCursorCliked ? 'crosshair' : 'default' }} scrollWheelZoom={true}>
+      <MapContainer center={[8.5898, -75.8776]} zoom={10} ref={mapRef} style={{ height: "100vh", cursor: isCursorCliked ? 'crosshair' : 'default' }} scrollWheelZoom={true}>
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="OpenStreetMap">
             <TileLayer

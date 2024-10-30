@@ -23,8 +23,6 @@ import { Link } from 'react-router-dom';
 import logo from '../Assets/imageLogo1.png';
 
 
-
-
 //const drawerWidth = 240;
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
